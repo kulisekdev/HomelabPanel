@@ -10,7 +10,7 @@ app = Flask(__name__, template_folder="Pages")
 
 @app.route("/")
 def index():
-    return load_config()
+    return "OK!", 300
 
 
 if __name__ == "__main__": 
