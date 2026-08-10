@@ -1,5 +1,5 @@
 import tomllib
 
-def load_config() -> dict:
+def get_config(section: str) -> dict:
     with open("config.toml", "rb") as f:
-        return tomllib.load(f)["app"]
+        return tomllib.load(f)[section]
