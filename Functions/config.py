@@ -4,6 +4,8 @@ import traceback
 
 def get_config(file: str) -> dict:
     try: 
+        if not file.endswith(".toml"):
+            raise Exception("file isn't a toml file!")
         if not isinstance(file, str):
             raise TypeError(f"file must be str, got {type(file).__name__}")
         
