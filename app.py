@@ -19,3 +19,7 @@ def usage_report():
 @app.get("/system/config")
 def get_configuration():
     return get_config(2232, "app")
+
+@app.get("/system/testedit")
+def test_edit():
+    return set_config(file="config.toml", section="app", name="test", value="Yessir!")
