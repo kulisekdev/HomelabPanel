@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error {{ error }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: #0a0a0a;
+            padding-top: 80px;
+            padding-bottom: 80px;
+            overflow: hidden;
+        }
+        .error-container {
+            background-color: #0f0f0f;
+            padding: 40px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.9);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: calc(100vh - 160px);
+            text-align: center;
+        }
+        h1 {
+            color: #0056b3;
+            font-size: 48px;
+            margin: 0 0 15px 0;
+        }
+        p {
+            color: #f0f0f0;
+            font-size: 18px;
+            margin: 0;
+            max-width: 500px;
+            line-height: 1.5;
+        }
+        .funny-line {
+            color: #888;
+            font-size: 14px;
+            margin-top: 18px;
+        }
+        .top-bar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background-color: #050505;
+            padding: 15px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #222;
+            z-index: 10;
+            box-sizing: border-box;
+        }
+        .top-left {
+            color: #0056b3;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .top-right {
+            background-color: #0f0f0f;
+            padding: 10px 15px;
+            border-radius: 5px;
+            color: #f0f0f0;
+            font-size: 12px;
+        }
+        footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #050505;
+            padding: 15px;
+            text-align: center;
+            color: #666;
+            font-size: 12px;
+            border-top: 1px solid #222;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <div class="top-left">{{ info.title }}</div>
+        <div class="top-right">
+            <div><strong>IP:</strong> {{ info.ip }}</div>
+            <div><strong>Hostname:</strong> {{ info.hostname }}</div>
+        </div>
+    </div>
+
+    <div class="error-container">
+        <h1>{{ info.error }}</h1>
+        <p>{{ info.error_desc }}</p>
+        <p class="funny-line" id="funny-line" aria-live="polite"></p>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 {{ info.footer }}</p>
+    </footer>
+
+    <script>
+        const funnyLines = [
+            "This didn't go as planned.",
+            "The server took a wrong turn somewhere.",
+            "Well, that was unexpected. Even for us.",
+            "Please try again while we pretend this was intentional.",
+            "The hamsters powering this page need a quick break.",
+            "Something went sideways. No gravity was involved.",
+            "Error 404: Motivation not found.",
+            "It worked on my machine, we swear.",
+            "Our servers are currently having an existential crisis.",
+            "Looks like someone spilled coffee on the mainframe.",
+            "You broke it. Just kidding... mostly.",
+            "We hit a snag. The snag won."
+        ];
+
+        document.getElementById('funny-line').textContent =
+            funnyLines[Math.floor(Math.random() * funnyLines.length)];
+    </script>
+</body>
+</html>
