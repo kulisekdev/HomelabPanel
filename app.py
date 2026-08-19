@@ -1,22 +1,26 @@
-from flask import render_template, redirect, request, Flask, send_from_directory, url_for, make_response   
+from flask import render_template, redirect, request, Flask, send_from_directory, url_for, make_response, jsonify
+from flask_socketio import SocketIO
 from Functions.config import get_config, set_config
 from Functions.usage import get_system_usage
 from Functions.services import start_service, stop_service, enable_service, disable_service, service_status
 from Functions.hash import hash_password, verify_hashed_password
+from Functions.logger import LOG_DIR, logger
 from traceback import format_exc
 import socket
 import secrets
+import logging
 
+logger.info("Starting panel...")
 app = Flask(__name__, template_folder="Pages", static_folder="static")
-
+sio = SocketIO(app=app)
 
 @app.route("/", methods=["GET", "POST"])
 def index():
-    if verify_hashed_password(get_config("config.toml")["app"]["current_cookie"], request.cookies.get("session")):
-        return redirect(url_for("panel_home"))
     config = get_config("config.toml")
     config_app = config["app"]
-    print(request.method)
+    if verify_hashed_password(get_config("config.toml")["app"]["current_cookie"], request.cookies.get("session")):
+        return redirect(url_for("panel_home"))
+
     if request.method == "POST":
         if verify_hashed_password(get_config("config.toml")["app"]["current_cookie"], request.cookies.get("session")):
             return redirect(url_for("panel_home"))
@@ -28,23 +32,40 @@ def index():
                 cookie_value = secrets.token_urlsafe(32)
                 hashed_cookie = hash_password(cookie_value)
                 if hashed_cookie["success"]:
+                    logger.info(f"an user with IP: {request.remote_addr} has logged in.")
                     set_config("config.toml", "app", "current_cookie", hashed_cookie["result"])
                     response = make_response(redirect(url_for("panel_home")))
-                    response.set_cookie("session", cookie_value)
+                    response.set_cookie("session", cookie_value, 600)
                     return response
+            else:
+                return render_template("login.html", error=True, info={
+                    "title": config_app["name"],
+                    "footer": config_app["footer"],
+                    "ip": request.host.split(":")[0],
+                    "hostname": socket.gethostname()
+                })
 
+    
     return render_template(
         "login.html",
         info={
             "title": config_app["name"],
-            "footer": config_app["name"],
+            "footer": config_app["footer"],
             "ip": request.host.split(":")[0],
             "hostname": socket.gethostname()
         })
-
 @app.route("/panel")
 def panel_home():
-    return render_template("home.html")
+    if verify_hashed_password(get_config("config.toml")["app"]["current_cookie"], request.cookies.get("session")):
+        config_app = get_config("config.toml")["app"]
+
+        return render_template("home.html", info={
+            "title": config_app["name"],
+            "footer": config_app["footer"],
+            "ip": request.host.split(":")[0],
+            "hostname": socket.gethostname(),
+        })
+    return redirect(url_for("index"))
 
 
 @app.route("/panel/setup", methods=["GET","POST"])
@@ -54,7 +75,7 @@ def setup_panel():
     if get_config("config.toml")["app"]["setup"]:
         return render_template("error.html", info={
             "title": config_app["name"],
-            "footer": config_app["name"],
+            "footer": config_app["footer"],
             "ip": request.host.split(":")[0],
             "hostname": socket.gethostname(),
             "error": "Error!",
@@ -66,7 +87,6 @@ def setup_panel():
         print(f"got request: {request.method}")
 
         if password:
-
             hashedPass = hash_password(password)
             if hashedPass["success"]:
                 set_pass = set_config("config.toml", "app", "panel_password", hashedPass["result"])
@@ -86,7 +106,37 @@ def setup_panel():
             return {"msg": f"no password specified.", "success": False}
     return render_template("setup.html", info={
             "title": config_app["name"],
-            "footer": config_app["name"],
+            "footer": config_app["footer"],
             "ip": request.host.split(":")[0],
             "hostname": socket.gethostname(),
     })
+
+@sio.on("usage_info")
+def usage_info():
+    return get_system_usage()
+
+@sio.on("service")
+def service_manip(data):
+    if data["action"] and data["service_name"]:
+        action = data["type"]
+        service_name = data["service_name"]
+        if action == "start":
+            start_service(service_name)
+        if action == "stop":
+            stop_service(service_name)
+        if action == "enable":
+            enable_service(service_name)
+        if action == "disable":
+            disable_service(service_name)
+
+@sio.on("get_logs")
+def panel_logs():    
+    log_file = LOG_DIR / "panel.log"
+
+    if not log_file.exists():
+        return jsonify([])
+
+    logs = log_file.read_text(
+        encoding="utf-8"
+    ).splitlines()[-50:]
+    return logs

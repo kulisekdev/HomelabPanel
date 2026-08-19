@@ -1,8 +1,8 @@
 [app]
 name = "Homelab Management Panel"
 footer = "Made by kulisak!"
-panel_password = "$argon2id$v=19$m=65536,t=3,p=4$tca1972m0PO40HFj0JsS5Q$jprUVgKHBtObX9dlGqxtGccGmwGNn+7srKFg47n3E3o"
-current_cookie = "$argon2id$v=19$m=65536,t=3,p=4$d4O1hfQ4l4RIBHBhTMfwIQ$GTutQlmrN4kf7Ig2J0OrHxaO0V7rZiUeJ6fxRcGyGno"
+panel_password = "$argon2id$v=19$m=65536,t=3,p=4$MV7MiDlTctMjRsJQuxsFwg$7exfvTe0fD/HgBiwNfBYAsgNTchptMjwZO/2Mi/oVuU"
+current_cookie = "$argon2id$v=19$m=65536,t=3,p=4$DgX9T5G0jsFQvW26e3k9kw$cE2ED88HHm6X/i7aiTqoT29i9smH794hwAeB0Ol3rQ8"
 setup = false
 
 [gunicorn]

@@ -3,9 +3,1260 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HomelabPanel</title>
+
+    <title>{{ info.name }}</title>
+
+    <style>
+    /* ─────────────────────────────────────
+       Base reset
+    ───────────────────────────────────── */
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        font-family: ui-sans-serif, system-ui, -apple-system,
+            BlinkMacSystemFont, "Segoe UI", Roboto,
+            "Helvetica Neue", Arial, sans-serif;
+
+        min-height: 100vh;
+
+        background: #0a0a0a;
+        color: #f5f5f5;
+
+        display: flex;
+        flex-direction: column;
+
+        overflow: hidden;
+    }
+
+
+    /* ─────────────────────────────────────
+       Header
+    ───────────────────────────────────── */
+
+    header {
+        flex-shrink: 0;
+        border-bottom: 1px solid #262626;
+    }
+
+    .header-container {
+        width: 94%;
+        max-width: 110rem;
+
+        margin: 0 auto;
+
+        display: flex;
+        align-items: center;
+
+        padding: 1rem 0;
+    }
+
+    .menu-button {
+        width: 2rem;
+        height: 2rem;
+
+        margin-right: 0.75rem;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border: 1px solid #262626;
+        border-radius: 0.375rem;
+
+        background: #171717;
+        color: #a3a3a3;
+
+        cursor: pointer;
+
+        transition:
+            background-color 0.15s ease,
+            color 0.15s ease,
+            border-color 0.15s ease;
+    }
+
+    .menu-button:hover {
+        background: #262626;
+        border-color: #404040;
+        color: #f5f5f5;
+    }
+
+    .menu-button svg {
+        width: 1rem;
+        height: 1rem;
+    }
+
+    .brand {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: #3b82f6;
+    }
+
+
+    /* ─────────────────────────────────────
+       Navigation menu
+    ───────────────────────────────────── */
+
+    .menu {
+        position: fixed;
+        top: 0;
+        left: 0;
+
+        z-index: 100;
+
+        width: 17rem;
+        height: 100vh;
+
+        padding: 1rem;
+
+        background: #111111;
+        border-right: 1px solid #262626;
+
+        transform: translateX(-100%);
+        transition: transform 0.2s ease;
+    }
+
+    .menu.open {
+        transform: translateX(0);
+    }
+
+    .menu-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        padding-bottom: 1rem;
+        margin-bottom: 0.75rem;
+
+        border-bottom: 1px solid #262626;
+    }
+
+    .menu-title {
+        font-size: 0.875rem;
+        font-weight: 600;
+    }
+
+    .close-menu {
+        width: 2rem;
+        height: 2rem;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border: 1px solid #262626;
+        border-radius: 0.375rem;
+
+        background: transparent;
+        color: #737373;
+
+        cursor: pointer;
+    }
+
+    .close-menu:hover {
+        color: #f5f5f5;
+        background: #1f1f1f;
+    }
+
+    .menu-items {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .menu-item {
+        display: flex;
+        align-items: center;
+
+        width: 100%;
+
+        padding: 0.625rem 0.75rem;
+
+        border: 1px solid transparent;
+        border-radius: 0.375rem;
+
+        background: transparent;
+        color: #a3a3a3;
+
+        font-size: 0.875rem;
+        text-decoration: none;
+
+        cursor: pointer;
+
+        transition:
+            background-color 0.15s ease,
+            color 0.15s ease;
+    }
+
+    .menu-item:hover {
+        background: #1f1f1f;
+        color: #f5f5f5;
+    }
+
+    .menu-item.active {
+        background: #171717;
+        border-color: #262626;
+        color: #3b82f6;
+    }
+
+    .menu-overlay {
+        position: fixed;
+        inset: 0;
+
+        z-index: 90;
+
+        background: rgba(0, 0, 0, 0.5);
+
+        opacity: 0;
+        pointer-events: none;
+
+        transition: opacity 0.2s ease;
+    }
+
+    .menu-overlay.open {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+
+    /* ─────────────────────────────────────
+       Main dashboard
+    ───────────────────────────────────── */
+
+    main {
+        flex: 1;
+        min-height: 0;
+
+        width: 94%;
+        max-width: 110rem;
+
+        margin: 0 auto;
+
+        padding: 1.5rem 0;
+
+        display: flex;
+        flex-direction: column;
+    }
+
+    .dashboard-title {
+        flex-shrink: 0;
+        margin-bottom: 1rem;
+    }
+
+    .dashboard-title h1 {
+        font-size: 1.25rem;
+        font-weight: 600;
+    }
+
+    .dashboard-title p {
+        margin-top: 0.25rem;
+
+        font-size: 0.75rem;
+        color: #737373;
+    }
+
+
+    /* ─────────────────────────────────────
+       Dashboard grid
+    ───────────────────────────────────── */
+
+    .dashboard {
+        flex: 1;
+        min-height: 0;
+
+        width: 100%;
+
+        display: grid;
+
+        grid-template-columns:
+            minmax(0, 1.8fr)
+            minmax(20rem, 1fr);
+
+        grid-template-rows: 1fr 1fr;
+
+        gap: 1rem;
+    }
+
+
+    /* ─────────────────────────────────────
+       Cards
+    ───────────────────────────────────── */
+
+    .card {
+        min-height: 0;
+
+        border: 1px solid #262626;
+        border-radius: 0.5rem;
+
+        background: #171717;
+
+        overflow: hidden;
+    }
+
+    .card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        padding: 0.875rem 1rem;
+
+        border-bottom: 1px solid #262626;
+    }
+
+    .card-title {
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .card-subtitle {
+        font-size: 0.7rem;
+        color: #525252;
+    }
+
+
+    /* ─────────────────────────────────────
+       Disks
+    ───────────────────────────────────── */
+
+    .disks-card {
+        grid-column: 1;
+        grid-row: 1;
+    }
+
+    .disk-list {
+        height: calc(100% - 49px);
+        overflow: hidden;
+    }
+
+    .disk {
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid #1f1f1f;
+    }
+
+    .disk:last-child {
+        border-bottom: none;
+    }
+
+    .disk-header {
+        display: flex;
+        justify-content: space-between;
+
+        font-size: 0.75rem;
+    }
+
+    .disk-name {
+        color: #d4d4d4;
+        font-weight: 500;
+    }
+
+    .disk-percent {
+        color: #737373;
+    }
+
+    .disk-progress {
+        height: 0.3rem;
+
+        margin-top: 0.5rem;
+
+        border-radius: 999px;
+
+        background: #262626;
+
+        overflow: hidden;
+    }
+
+    .disk-progress-bar {
+        height: 100%;
+
+        border-radius: inherit;
+
+        background: #3b82f6;
+
+        transition: width 0.4s ease;
+    }
+
+    .disk-meta {
+        display: flex;
+        justify-content: space-between;
+
+        margin-top: 0.35rem;
+
+        font-size: 0.65rem;
+        color: #525252;
+    }
+
+
+    /* ─────────────────────────────────────
+       Logs
+    ───────────────────────────────────── */
+
+    .logs-card {
+        grid-column: 1;
+        grid-row: 2;
+    }
+
+    .logs {
+        height: calc(100% - 49px);
+
+        overflow: hidden;
+
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco,
+            Consolas, "Liberation Mono", "Courier New", monospace;
+
+        font-size: 0.68rem;
+    }
+
+    .log-entry {
+        padding: 0.45rem 1rem;
+
+        border-bottom: 1px solid #1f1f1f;
+
+        color: #737373;
+
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+
+    /* ─────────────────────────────────────
+       Right column
+    ───────────────────────────────────── */
+
+    .right-column {
+        grid-column: 2;
+        grid-row: 1 / span 2;
+
+        min-height: 0;
+
+        display: grid;
+
+        grid-template-rows:
+            1fr
+            1fr
+            1fr;
+
+        gap: 1rem;
+    }
+
+
+    /* ─────────────────────────────────────
+       CPU / RAM
+    ───────────────────────────────────── */
+
+    .stat-content {
+        padding: 1rem;
+    }
+
+    .stat-value {
+        font-size: 1.5rem;
+        font-weight: 600;
+    }
+
+    .stat-detail {
+        margin-top: 0.25rem;
+
+        font-size: 0.7rem;
+        color: #737373;
+    }
+
+    .progress {
+        width: 100%;
+        height: 0.35rem;
+
+        margin-top: 0.875rem;
+
+        border-radius: 999px;
+
+        background: #262626;
+
+        overflow: hidden;
+    }
+
+    .progress-bar {
+        height: 100%;
+        width: 0;
+
+        border-radius: inherit;
+
+        background: #3b82f6;
+
+        transition: width 0.4s ease;
+    }
+
+
+    /* ─────────────────────────────────────
+       Machine info
+    ───────────────────────────────────── */
+
+    .machine-info {
+        padding: 1rem;
+    }
+
+    .machine-row {
+        display: flex;
+        justify-content: space-between;
+
+        padding: 0.55rem 0;
+
+        border-bottom: 1px solid #1f1f1f;
+
+        font-size: 0.75rem;
+    }
+
+    .machine-row:last-child {
+        border-bottom: none;
+    }
+
+    .machine-label {
+        color: #737373;
+    }
+
+    .machine-value {
+        max-width: 60%;
+
+        color: #d4d4d4;
+
+        text-align: right;
+
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+
+    /* ─────────────────────────────────────
+       Footer
+    ───────────────────────────────────── */
+
+    footer {
+        flex-shrink: 0;
+
+        border-top: 1px solid #262626;
+    }
+
+    .footer-content {
+        width: 94%;
+        max-width: 110rem;
+
+        margin: 0 auto;
+
+        padding: 0.75rem 0;
+
+        text-align: center;
+
+        font-size: 0.7rem;
+        color: #525252;
+    }
+
+
+    /* ─────────────────────────────────────
+       Empty state
+    ───────────────────────────────────── */
+
+    .empty {
+        padding: 1rem;
+
+        font-size: 0.7rem;
+        color: #525252;
+    }
+
+
+    /* ─────────────────────────────────────
+       Responsive
+    ───────────────────────────────────── */
+
+    @media (max-width: 900px) {
+
+        body {
+            overflow: auto;
+        }
+
+        main {
+            min-height: auto;
+        }
+
+        .dashboard {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .right-column {
+            display: contents;
+        }
+
+        .card {
+            min-height: 12rem;
+        }
+
+        .disk-list,
+        .logs {
+            height: auto;
+            max-height: 16rem;
+            overflow-y: auto;
+        }
+    }
+
+
+    @media (max-width: 600px) {
+
+        .header-container,
+        main,
+        .footer-content {
+            width: 92%;
+        }
+
+        main {
+            padding: 1rem 0;
+        }
+
+        .dashboard {
+            gap: 0.75rem;
+        }
+
+        .right-column {
+            gap: 0.75rem;
+        }
+
+        .card-header {
+            padding: 0.75rem;
+        }
+
+        .stat-content,
+        .machine-info {
+            padding: 0.75rem;
+        }
+
+        .disk {
+            padding: 0.65rem 0.75rem;
+        }
+    }
+</style>
 </head>
+
 <body>
-    <h1>idk</h1>
+
+    <!-- Navigation overlay -->
+    <div id="menu-overlay" class="menu-overlay"></div>
+
+    <!-- Navigation -->
+    <nav id="menu" class="menu">
+
+        <div class="menu-header">
+
+            <span class="menu-title">
+                Navigation
+            </span>
+
+            <button
+                id="close-menu"
+                class="close-menu"
+                type="button"
+                aria-label="Close menu"
+            >
+                ×
+            </button>
+
+        </div>
+
+        <div class="menu-items">
+
+            <a
+                href="/home"
+                class="menu-item active"
+            >
+                Dashboard
+            </a>
+
+            <a
+                href="/services"
+                class="menu-item"
+            >
+                Services
+            </a>
+
+            <a
+                href="/logs"
+                class="menu-item"
+            >
+                Logs
+            </a>
+
+            <a
+                href="/system"
+                class="menu-item"
+            >
+                System
+            </a>
+
+        </div>
+
+    </nav>
+
+
+    <!-- Header -->
+    <header>
+
+        <div class="header-container">
+
+            <button
+                id="open-menu"
+                class="menu-button"
+                type="button"
+                aria-label="Open navigation"
+            >
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                >
+                    <path
+                        stroke-linecap="round"
+                        d="M4 7h16M4 12h16M4 17h16"
+                    />
+                </svg>
+            </button>
+
+            <span class="brand">
+                {{ info.name }}
+            </span>
+
+        </div>
+
+    </header>
+
+
+    <!-- Dashboard -->
+    <main>
+
+        <div class="dashboard-title">
+
+            <h1>
+                Dashboard
+            </h1>
+
+            <p>
+                System overview and activity.
+            </p>
+
+        </div>
+
+
+        <div class="dashboard">
+
+            <!-- Disk usage -->
+            <section class="card disks-card">
+
+                <div class="card-header">
+
+                    <span class="card-title">
+                        Disk usage
+                    </span>
+
+                    <span class="card-subtitle">
+                        Storage
+                    </span>
+
+                </div>
+
+                <div
+                    id="disk-list"
+                    class="disk-list"
+                >
+                    <div class="empty">
+                        Loading disks...
+                    </div>
+                </div>
+
+            </section>
+
+
+            <!-- Logs -->
+            <section class="card logs-card">
+
+                <div class="card-header">
+
+                    <span class="card-title">
+                        Recent logs
+                    </span>
+
+                    <span class="card-subtitle">
+                        Activity
+                    </span>
+
+                </div>
+
+                <div
+                    id="logs"
+                    class="logs"
+                >
+                    <div class="empty">
+                        Loading logs...
+                    </div>
+                </div>
+
+            </section>
+
+
+            <!-- Right side -->
+            <div class="right-column">
+
+                <!-- CPU -->
+                <section class="card">
+
+                    <div class="card-header">
+
+                        <span class="card-title">
+                            CPU
+                        </span>
+
+                        <span
+                            id="cpu-percent"
+                            class="card-subtitle"
+                        >
+                            —
+                        </span>
+
+                    </div>
+
+                    <div class="stat-content">
+
+                        <div
+                            id="cpu-name"
+                            class="stat-detail"
+                        >
+                            Loading...
+                        </div>
+
+                        <div
+                            id="cpu-percent-detail"
+                            class="stat-value"
+                        >
+                            —
+                        </div>
+
+                        <div class="progress">
+
+                            <div
+                                id="cpu-progress"
+                                class="progress-bar"
+                            ></div>
+
+                        </div>
+
+                        <div
+                            id="cpu-details"
+                            class="stat-detail"
+                        >
+                            —
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- RAM -->
+                <section class="card">
+
+                    <div class="card-header">
+
+                        <span class="card-title">
+                            Memory
+                        </span>
+
+                        <span class="card-subtitle">
+                            RAM
+                        </span>
+
+                    </div>
+
+                    <div class="stat-content">
+
+                        <div
+                            id="ram-used"
+                            class="stat-value"
+                        >
+                            —
+                        </div>
+
+                        <div
+                            id="ram-available"
+                            class="stat-detail"
+                        >
+                            —
+                        </div>
+
+                        <div class="progress">
+
+                            <div
+                                id="ram-progress"
+                                class="progress-bar"
+                            ></div>
+
+                        </div>
+
+                        <div
+                            id="ram-total"
+                            class="stat-detail"
+                        >
+                            —
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- Machine -->
+                <section class="card">
+
+                    <div class="card-header">
+
+                        <span class="card-title">
+                            Machine
+                        </span>
+
+                        <span class="card-subtitle">
+                            Information
+                        </span>
+
+                    </div>
+
+                    <div class="machine-info">
+
+                        <div class="machine-row">
+
+                            <span class="machine-label">
+                                Hostname
+                            </span>
+
+                            <span class="machine-value">
+                                {{ info.hostname }}
+                            </span>
+
+                        </div>
+
+                        <div class="machine-row">
+
+                            <span class="machine-label">
+                                IP address
+                            </span>
+
+                            <span class="machine-value">
+                                {{ info.ip }}
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <!-- Footer -->
+    <footer>
+
+        <div class="footer-content">
+            &copy; 2026 {{ info.footer }}
+        </div>
+
+    </footer>
+
+
+    <script src="/static/socket.io.min.js"></script>
+
+    <script>
+
+        const socket = io();
+
+
+        /* ─────────────────────────────────────
+           Navigation
+        ───────────────────────────────────── */
+
+        const menu = document.getElementById("menu");
+        const overlay = document.getElementById("menu-overlay");
+
+        document.getElementById("open-menu").addEventListener("click", () => {
+            menu.classList.add("open");
+            overlay.classList.add("open");
+        });
+
+        document.getElementById("close-menu").addEventListener("click", closeMenu);
+
+        overlay.addEventListener("click", closeMenu);
+
+        function closeMenu() {
+            menu.classList.remove("open");
+            overlay.classList.remove("open");
+        }
+
+
+        /* ─────────────────────────────────────
+           Socket.IO
+        ───────────────────────────────────── */
+
+        socket.on("connect", () => {
+            console.log("Connected to Socket.IO");
+
+            getUsage();
+            getRecentLogs();
+        });
+
+        socket.on("disconnect", () => {
+            console.log("Disconnected from Socket.IO");
+        });
+
+
+        /* ─────────────────────────────────────
+           Usage
+        ───────────────────────────────────── */
+
+        function getUsage() {
+
+            socket.emit("usage_info", (data) => {
+
+                if (!data) {
+                    return;
+                }
+
+
+                /* CPU */
+
+                const cpu = data.cpu;
+
+                const cpuPercent =
+                    parseFloat(cpu.usagepercent) || 0;
+
+                document.getElementById("cpu-percent").innerText =
+                    `${cpuPercent.toFixed(1)}%`;
+
+                document.getElementById("cpu-percent-detail").innerText =
+                    `${cpuPercent.toFixed(1)}%`;
+
+                document.getElementById("cpu-name").innerText =
+                    cpu.name;
+
+                document.getElementById("cpu-details").innerText =
+                    `${cpu.cores} cores · ${parseFloat(cpu.maxfrequency).toFixed(0)} MHz`;
+
+                document.getElementById("cpu-progress").style.width =
+                    `${Math.min(cpuPercent, 100)}%`;
+
+
+                /* RAM */
+
+                const ram = data.ram.gigabytes;
+
+                const ramUsed =
+                    parseFloat(ram.used) || 0;
+
+                const ramAvailable =
+                    parseFloat(ram.available) || 0;
+
+                const ramTotal =
+                    parseFloat(ram.total) || 0;
+
+                const ramPercent =
+                    ramTotal > 0
+                        ? (ramUsed / ramTotal) * 100
+                        : 0;
+
+                document.getElementById("ram-used").innerText =
+                    `${ramUsed.toFixed(2)} / ${ramTotal.toFixed(2)} GB`;
+
+                document.getElementById("ram-available").innerText =
+                    `${ramAvailable.toFixed(2)} GB available`;
+
+                document.getElementById("ram-total").innerText =
+                    `${ramPercent.toFixed(1)}% used`;
+
+                document.getElementById("ram-progress").style.width =
+                    `${Math.min(ramPercent, 100)}%`;
+
+
+                /* Disks */
+
+                renderDisks(data.disk);
+
+            });
+        }
+
+
+        /* ─────────────────────────────────────
+           Disks
+        ───────────────────────────────────── */
+
+        function renderDisks(disks) {
+
+            const container =
+                document.getElementById("disk-list");
+
+            container.innerHTML = "";
+
+
+            if (!disks || disks.length === 0) {
+
+                container.innerHTML = `
+                    <div class="empty">
+                        No disks found.
+                    </div>
+                `;
+
+                return;
+            }
+
+
+            disks.forEach((diskEntry) => {
+
+                const mountpoint =
+                    Object.keys(diskEntry)[0];
+
+                const disk =
+                    diskEntry[mountpoint];
+
+                const percent =
+                    parseFloat(disk.percent) || 0;
+
+
+                const element =
+                    document.createElement("div");
+
+                element.className = "disk";
+
+                element.innerHTML = `
+                    <div class="disk-header">
+
+                        <span class="disk-name">
+                            ${escapeHtml(mountpoint)}
+                        </span>
+
+                        <span class="disk-percent">
+                            ${escapeHtml(disk.percent)}
+                        </span>
+
+                    </div>
+
+                    <div class="disk-progress">
+
+                        <div
+                            class="disk-progress-bar"
+                            style="width: ${Math.min(percent, 100)}%"
+                        ></div>
+
+                    </div>
+
+                    <div class="disk-meta">
+
+                        <span>
+                            ${escapeHtml(disk.used)} GiB used
+                        </span>
+
+                        <span>
+                            ${escapeHtml(disk.free)} GiB free
+                        </span>
+
+                        <span>
+                            ${escapeHtml(disk.total)} GiB
+                        </span>
+
+                    </div>
+                `;
+
+                container.appendChild(element);
+            });
+        }
+
+
+        /* ─────────────────────────────────────
+           Logs
+        ───────────────────────────────────── */
+
+        function getRecentLogs() {
+
+            socket.emit("get_logs", (data) => {
+
+                const container =
+                    document.getElementById("logs");
+
+                container.innerHTML = "";
+
+
+                if (!data || data.length === 0) {
+
+                    container.innerHTML = `
+                        <div class="empty">
+                            No logs available.
+                        </div>
+                    `;
+
+                    return;
+                }
+
+
+                /*
+                 * The dashboard only has enough
+                 * room for a few lines.
+                 *
+                 * The newest entries are shown.
+                 */
+
+                data.slice(-8).forEach((entry) => {
+
+                    const element =
+                        document.createElement("div");
+
+                    element.className = "log-entry";
+
+                    element.textContent = entry;
+
+                    container.appendChild(element);
+                });
+
+            });
+        }
+
+
+        /* ─────────────────────────────────────
+           Helpers
+        ───────────────────────────────────── */
+
+        function escapeHtml(value) {
+
+            return String(value)
+                .replaceAll("&", "&amp;")
+                .replaceAll("<", "&lt;")
+                .replaceAll(">", "&gt;")
+                .replaceAll('"', "&quot;")
+                .replaceAll("'", "&#039;");
+        }
+
+
+        /* ─────────────────────────────────────
+           Refresh
+        ───────────────────────────────────── */
+
+        setInterval(() => {
+
+            getUsage();
+            getRecentLogs();
+
+        }, 5000);
+
+    </script>
+
 </body>
 </html>

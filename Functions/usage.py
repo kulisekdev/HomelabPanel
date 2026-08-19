@@ -27,10 +27,7 @@ def get_disks() -> dict:
             "free": free,
             "percent": percent
         }
-        print(disk_dictionary)
-        print(disk)
         response.append(disk_dictionary)
-
     return response
 
 def get_system_usage() -> dict:
@@ -43,7 +40,6 @@ def get_system_usage() -> dict:
 
 
     if len(cpu_name) < 1:
-        print("Blank name. doing system cpuinfo.")
         with open("/proc/cpuinfo") as f:
             for line in f:
                 if line.startswith("model name"):

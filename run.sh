@@ -7,4 +7,4 @@ port=$(python -c 'import tomllib; print(tomllib.load(open("config.toml", "rb"))[
 
 CONNECTION="$host:$port"
 
-/home/luke/Plocha/Serverpanel/Libraries/bin/gunicorn app:app --bind $CONNECTION --workers 4
+/home/luke/Plocha/Serverpanel/Libraries/bin/gunicorn --worker-class gevent app:app --bind $CONNECTION --workers 1

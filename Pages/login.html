@@ -218,7 +218,9 @@
                     <button type="submit" class="btn-submit">
                         Sign in
                     </button>
-
+                    {% if error %}
+                    <p style="color: red;">Incorrect Password!</p>
+                    {% endif %}
                 </form>
 
             </div>
