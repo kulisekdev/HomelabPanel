@@ -9,7 +9,6 @@ def hash_password(password: str):
         try:
             hashedPass = ph.hash(password)
             return {
-                "msg": "Successfully hashed password.",
                 "result": hashedPass,
                 "success": True
             }
@@ -18,13 +17,15 @@ def hash_password(password: str):
                 "msg": f"Error: {e}",
                 "success": False
             }
-
+    else:
+        return {
+            "msg": f"password variable is undefined.",
+            "success": False
+        }
 def verify_hashed_password(hashed_password: str, password: str) -> bool:
     if password:
         try:
             ph.verify(hashed_password, password)
             return True
-        except VerifyMismatchError:
-            return False
-        except VerificationError:
+        except (VerifyMismatchError, VerificationError):
             return False

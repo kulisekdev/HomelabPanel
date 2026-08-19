@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Setup</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+                "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            min-height: 100vh;
+            background-color: #0a0a0a;
+            color: #f5f5f5;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        header {
+            border-bottom: 1px solid #262626;
+        }
+
+        .header-container {
+            max-width: 72rem;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 1.5rem;
+        }
+
+        .brand-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #3b82f6;
+        }
+
+        .server-info {
+            text-align: right;
+            font-size: 0.75rem;
+            line-height: 1.25rem;
+            color: #737373;
+        }
+
+        /* Main */
+        main {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1.5rem;
+        }
+
+        .setup-wrapper {
+            width: 100%;
+            max-width: 28rem;
+        }
+
+        /* Card */
+        .card {
+            border-radius: 0.5rem;
+            border: 1px solid #262626;
+            background-color: #171717;
+            padding: 1.75rem;
+        }
+
+        .card-header {
+            margin-bottom: 1.75rem;
+        }
+
+        .step-indicator {
+            margin-bottom: 0.75rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #525252;
+        }
+
+        .step-indicator span {
+            color: #3b82f6;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            line-height: 1.75rem;
+            font-weight: 600;
+        }
+
+        .card-subtitle {
+            margin-top: 0.375rem;
+            font-size: 0.875rem;
+            line-height: 1.5rem;
+            color: #737373;
+        }
+
+        /* Progress */
+        .progress {
+            display: flex;
+            gap: 0.375rem;
+            margin-bottom: 1.75rem;
+        }
+
+        .progress-item {
+            height: 2px;
+            flex: 1;
+            border-radius: 9999px;
+            background-color: #262626;
+            transition: background-color 0.2s ease;
+        }
+
+        .progress-item.active {
+            background-color: #3b82f6;
+        }
+
+        /* Steps */
+        .step {
+            display: none;
+        }
+
+        .step.active {
+            display: block;
+        }
+
+        /* Explanation */
+        .explanation {
+            margin-bottom: 1.5rem;
+            padding: 0.875rem;
+            border-radius: 0.375rem;
+            border: 1px solid #262626;
+            background-color: #0f0f0f;
+            font-size: 0.75rem;
+            line-height: 1.35rem;
+            color: #737373;
+        }
+
+        /* Form */
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #d4d4d4;
+        }
+
+        .form-help {
+            margin-top: 0.375rem;
+            font-size: 0.75rem;
+            line-height: 1.25rem;
+            color: #525252;
+        }
+
+        .form-input {
+            width: 100%;
+            border-radius: 0.375rem;
+            border: 1px solid #404040;
+            background-color: #0a0a0a;
+            padding: 0.625rem 0.75rem;
+            font-size: 0.875rem;
+            color: #f5f5f5;
+            outline: none;
+            transition: border-color 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .form-input::placeholder {
+            color: #525252;
+        }
+
+        .form-input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.5);
+        }
+
+        /* Buttons */
+        .button-row {
+            display: flex;
+            gap: 0.625rem;
+            margin-top: 1.75rem;
+        }
+
+        .btn {
+            flex: 1;
+            border-radius: 0.375rem;
+            padding: 0.625rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.15s ease, border-color 0.15s ease;
+        }
+
+        .btn-primary {
+            border: 1px solid #2563eb;
+            background-color: #2563eb;
+            color: #ffffff;
+        }
+
+        .btn-primary:hover {
+            background-color: #3b82f6;
+        }
+
+        .btn-primary:active {
+            background-color: #1d4ed8;
+        }
+
+        .btn-secondary {
+            border: 1px solid #404040;
+            background-color: transparent;
+            color: #a3a3a3;
+        }
+
+        .btn-secondary:hover {
+            border-color: #525252;
+            background-color: #262626;
+            color: #f5f5f5;
+        }
+
+        .btn:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid #262626;
+        }
+
+        .footer-content {
+            padding: 1rem 1.5rem;
+            text-align: center;
+            font-size: 0.75rem;
+            color: #525252;
+        }
+
+        @media (max-width: 640px) {
+            .header-container {
+                padding: 1rem;
+            }
+
+            .server-info {
+                font-size: 0.7rem;
+            }
+
+            main {
+                padding: 1.5rem 1rem;
+            }
+
+            .card {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+
+            <span class="brand-title">
+                {{ info.title }}
+            </span>
+
+            <div class="server-info">
+                <div>{{ info.hostname }}</div>
+                <div>{{ info.ip }}</div>
+            </div>
+
+        </div>
+    </header>
+
+
+    <!-- Setup -->
+    <main>
+
+        <div class="setup-wrapper">
+
+            <form
+                id="setup-form"
+                action="/panel/setup"
+                method="post"
+            >
+
+                <div class="card">
+
+                    <!-- Progress -->
+                    <div class="progress">
+                        <div class="progress-item active"></div>
+                        <div class="progress-item"></div>
+                        <div class="progress-item"></div>
+                    </div>
+
+
+                    <!-- Step 1 -->
+                    <section class="step active" data-step="1">
+
+                        <div class="card-header">
+                            <div class="step-indicator">
+                                Step <span>1</span> of 3
+                            </div>
+
+                            <h1 class="card-title">
+                                Create your password
+                            </h1>
+
+                            <p class="card-subtitle">
+                                Secure your panel before configuring how it will be accessed.
+                            </p>
+                        </div>
+
+                        <div class="explanation">
+                            This password will be required when signing in to the panel.
+                            Choose something strong and keep it somewhere safe.
+                        </div>
+
+                        <div class="form-group">
+                            <label for="passwd" class="form-label">
+                                Password
+                            </label>
+
+                            <input
+                                id="passwd"
+                                type="password"
+                                name="passwd"
+                                required
+                                minlength="8"
+                                autocomplete="new-password"
+                                placeholder="Create a password"
+                                class="form-input"
+                            >
+
+                            <p class="form-help">
+                                Use at least 8 characters.
+                            </p>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="passwd_confirm" class="form-label">
+                                Confirm password
+                            </label>
+
+                            <input
+                                id="passwd_confirm"
+                                type="password"
+                                name="passwd_confirm"
+                                required
+                                minlength="8"
+                                autocomplete="new-password"
+                                placeholder="Confirm your password"
+                                class="form-input"
+                            >
+                        </div>
+
+                        <div class="button-row">
+                            <button type="button" class="btn btn-primary" onclick="nextStep()">
+                                Continue
+                            </button>
+                        </div>
+
+                    </section>
+
+
+                    <!-- Step 2 -->
+                    <section class="step" data-step="2">
+
+                        <div class="card-header">
+                            <div class="step-indicator">
+                                Step <span>2</span> of 3
+                            </div>
+
+                            <h1 class="card-title">
+                                Set the panel host
+                            </h1>
+
+                            <p class="card-subtitle">
+                                Choose where the panel should listen for connections.
+                            </p>
+                        </div>
+
+                        <div class="explanation">
+                            The host determines which network interface the panel
+                            will bind to. Using <strong>127.0.0.1</strong> makes the
+                            panel accessible only from this machine.
+                        </div>
+
+                        <div class="form-group">
+                            <label for="host" class="form-label">
+                                Panel host
+                            </label>
+
+                            <input
+                                id="host"
+                                type="text"
+                                name="host"
+                                required
+                                autocomplete="off"
+                                value="127.0.0.1"
+                                class="form-input"
+                            >
+
+                            <p class="form-help">
+                                Default: 127.0.0.1
+                            </p>
+                        </div>
+
+                        <div class="button-row">
+                            <button type="button" class="btn btn-secondary" onclick="previousStep()">
+                                Back
+                            </button>
+
+                            <button type="button" class="btn btn-primary" onclick="nextStep()">
+                                Continue
+                            </button>
+                        </div>
+
+                    </section>
+
+
+                    <!-- Step 3 -->
+                    <section class="step" data-step="3">
+
+                        <div class="card-header">
+                            <div class="step-indicator">
+                                Step <span>3</span> of 3
+                            </div>
+
+                            <h1 class="card-title">
+                                Set the panel port
+                            </h1>
+
+                            <p class="card-subtitle">
+                                Choose which port the panel should use.
+                            </p>
+                        </div>
+
+                        <div class="explanation">
+                            The port is the number used to connect to the panel.
+                            If you're unsure which port to use, the default
+                            <strong>8080</strong> is a good starting point.
+                        </div>
+
+                        <div class="form-group">
+                            <label for="port" class="form-label">
+                                Panel port
+                            </label>
+
+                            <input
+                                id="port"
+                                type="number"
+                                name="port"
+                                required
+                                min="1"
+                                max="65535"
+                                inputmode="numeric"
+                                value="8080"
+                                class="form-input"
+                            >
+
+                            <p class="form-help">
+                                Default: 8080 · Valid range: 1–65535
+                            </p>
+                        </div>
+
+                        <div class="button-row">
+                            <button type="button" class="btn btn-secondary" onclick="previousStep()">
+                                Back
+                            </button>
+
+                            <button type="submit" class="btn btn-primary">
+                                Complete setup
+                            </button>
+                        </div>
+
+                    </section>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </main>
+
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            &copy; 2026 {{ info.footer }}
+        </div>
+    </footer>
+
+
+    <script>
+        let currentStep = 1;
+
+        const steps = document.querySelectorAll(".step");
+        const progressItems = document.querySelectorAll(".progress-item");
+
+        const password = document.getElementById("passwd");
+        const passwordConfirm = document.getElementById("passwd_confirm");
+
+        function updateStep() {
+            steps.forEach((step, index) => {
+                step.classList.toggle("active", index === currentStep - 1);
+            });
+
+            progressItems.forEach((item, index) => {
+                item.classList.toggle("active", index < currentStep);
+            });
+        }
+
+        function validateCurrentStep() {
+            const current = document.querySelector(
+                `.step[data-step="${currentStep}"]`
+            );
+
+            const inputs = current.querySelectorAll("input");
+
+            for (const input of inputs) {
+                if (!input.checkValidity()) {
+                    input.reportValidity();
+                    return false;
+                }
+            }
+
+            if (currentStep === 1 && password.value !== passwordConfirm.value) {
+                passwordConfirm.setCustomValidity("Passwords do not match.");
+                passwordConfirm.reportValidity();
+                passwordConfirm.setCustomValidity("");
+                return false;
+            }
+
+            return true;
+        }
+
+        function nextStep() {
+            if (!validateCurrentStep()) {
+                return;
+            }
+
+            if (currentStep < 3) {
+                currentStep++;
+                updateStep();
+            }
+        }
+
+        function previousStep() {
+            if (currentStep > 1) {
+                currentStep--;
+                updateStep();
+            }
+        }
+
+        password.addEventListener("input", () => {
+            passwordConfirm.setCustomValidity(
+                password.value !== passwordConfirm.value
+                    ? "Passwords do not match."
+                    : ""
+            );
+        });
+
+        passwordConfirm.addEventListener("input", () => {
+            passwordConfirm.setCustomValidity(
+                password.value !== passwordConfirm.value
+                    ? "Passwords do not match."
+                    : ""
+            );
+        });
+    </script>
+
+</body>
+</html>

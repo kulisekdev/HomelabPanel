@@ -3,102 +3,236 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Error {{ error }}</title>
+    <title>Error {{ info.error }}</title>
+
     <style>
-        body {
-            font-family: Arial, sans-serif;
+        /* Base reset & body */
+        * {
+            box-sizing: border-box;
             margin: 0;
-            background-color: #0a0a0a;
-            padding-top: 80px;
-            padding-bottom: 80px;
-            overflow: hidden;
+            padding: 0;
         }
-        .error-container {
-            background-color: #0f0f0f;
-            padding: 40px;
-            border-radius: 5px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.9);
+
+        body {
+            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            min-height: 100vh;
+            background-color: #0a0a0a;
+            color: #f5f5f5;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            min-height: calc(100vh - 160px);
-            text-align: center;
         }
-        h1 {
-            color: #0056b3;
-            font-size: 48px;
-            margin: 0 0 15px 0;
+
+        /* Header */
+        header {
+            border-bottom: 1px solid #262626;
         }
-        p {
-            color: #f0f0f0;
-            font-size: 18px;
-            margin: 0;
-            max-width: 500px;
-            line-height: 1.5;
-        }
-        .funny-line {
-            color: #888;
-            font-size: 14px;
-            margin-top: 18px;
-        }
-        .top-bar {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            background-color: #050505;
-            padding: 15px 50px;
+
+        .header-container {
+            max-width: 72rem;
+            margin-left: auto;
+            margin-right: auto;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid #222;
-            z-index: 10;
-            box-sizing: border-box;
+            justify-content: space-between;
+            padding: 1rem 1.5rem;
         }
-        .top-left {
-            color: #0056b3;
-            font-size: 18px;
-            font-weight: bold;
+
+        .brand-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #3b82f6;
         }
-        .top-right {
-            background-color: #0f0f0f;
-            padding: 10px 15px;
-            border-radius: 5px;
-            color: #f0f0f0;
-            font-size: 12px;
+
+        .server-info {
+            text-align: right;
+            font-size: 0.75rem;
+            line-height: 1.25rem;
+            color: #737373;
         }
-        footer {
-            position: fixed;
-            bottom: 0;
+
+        /* Main layout */
+        main {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 1.5rem;
+            min-height: calc(100vh - 113px);
+        }
+
+        .error-wrapper {
             width: 100%;
-            background-color: #050505;
-            padding: 15px;
+            max-width: 32rem;
+        }
+
+        /* Card */
+        .card {
+            border-radius: 0.5rem;
+            border: 1px solid #262626;
+            background-color: #171717;
+            padding: 2rem;
             text-align: center;
-            color: #666;
-            font-size: 12px;
-            border-top: 1px solid #222;
-            box-sizing: border-box;
+        }
+
+        /* Error icon */
+        .error-icon {
+            width: 4rem;
+            height: 4rem;
+            margin: 0 auto 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 9999px;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            background-color: rgba(59, 130, 246, 0.1);
+            color: #3b82f6;
+        }
+
+        .error-icon svg {
+            width: 2rem;
+            height: 2rem;
+        }
+
+        /* Error content */
+        .error-code {
+            font-size: 2.25rem;
+            line-height: 2.5rem;
+            font-weight: 600;
+            color: #f5f5f5;
+        }
+
+        .error-description {
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+            line-height: 1.5rem;
+            color: #737373;
+        }
+
+        /* Funny message */
+        .funny-message {
+            margin-top: 1.75rem;
+            padding-top: 1.25rem;
+            border-top: 1px solid #262626;
+        }
+
+        .funny-line {
+            font-size: 0.75rem;
+            font-style: italic;
+            color: #525252;
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid #262626;
+        }
+
+        .footer-content {
+            padding: 1rem 1.5rem;
+            text-align: center;
+            font-size: 0.75rem;
+            color: #525252;
+        }
+
+        /* Mobile */
+        @media (max-width: 640px) {
+            .header-container {
+                padding: 1rem;
+            }
+
+            .server-info {
+                font-size: 0.7rem;
+            }
+
+            main {
+                padding: 0 1rem;
+            }
+
+            .card {
+                padding: 1.75rem;
+            }
         }
     </style>
 </head>
+
 <body>
-    <div class="top-bar">
-        <div class="top-left">{{ info.title }}</div>
-        <div class="top-right">
-            <div><strong>IP:</strong> {{ info.ip }}</div>
-            <div><strong>Hostname:</strong> {{ info.hostname }}</div>
+
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+
+            <span class="brand-title">
+                {{ info.title }}
+            </span>
+
+            <div class="server-info">
+                <div>{{ info.hostname }}</div>
+                <div>{{ info.ip }}</div>
+            </div>
+
         </div>
-    </div>
+    </header>
 
-    <div class="error-container">
-        <h1>{{ info.error }}</h1>
-        <p>{{ info.error_desc }}</p>
-        <p class="funny-line" id="funny-line" aria-live="polite"></p>
-    </div>
 
+    <!-- Error -->
+    <main>
+
+        <div class="error-wrapper">
+
+            <div class="card">
+
+                <!-- Error Icon -->
+                <div class="error-icon">
+                    <svg
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                        aria-hidden="true"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M12 9v3.75m0 3.75h.008M10.34 3.94l-7.02 12.12A1.5 1.5 0 004.62 18.3h14.76a1.5 1.5 0 001.3-2.24L13.66 3.94a1.91 1.91 0 00-3.32 0z"
+                        />
+                    </svg>
+                </div>
+
+
+                <!-- Error Code -->
+                <h1 class="error-code">
+                    {{ info.error }}
+                </h1>
+
+
+                <!-- Description -->
+                <p class="error-description">
+                    {{ info.error_desc }}
+                </p>
+
+
+                <!-- Funny Message -->
+                <div class="funny-message">
+                    <p
+                        id="funny-line"
+                        aria-live="polite"
+                        class="funny-line"
+                    ></p>
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <!-- Footer -->
     <footer>
-        <p>&copy; 2026 {{ info.footer }}</p>
+        <div class="footer-content">
+            &copy; 2026 {{ info.footer }}
+        </div>
     </footer>
+
 
     <script>
         const funnyLines = [
@@ -116,8 +250,9 @@
             "We hit a snag. The snag won."
         ];
 
-        document.getElementById('funny-line').textContent =
+        document.getElementById("funny-line").textContent =
             funnyLines[Math.floor(Math.random() * funnyLines.length)];
     </script>
+
 </body>
 </html>

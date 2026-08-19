@@ -1,3 +1,10 @@
 [app]
 name = "Homelab Management Panel"
-test = "Yessir!"
+footer = "Made by kulisak!"
+panel_password = "$argon2id$v=19$m=65536,t=3,p=4$tca1972m0PO40HFj0JsS5Q$jprUVgKHBtObX9dlGqxtGccGmwGNn+7srKFg47n3E3o"
+current_cookie = "$argon2id$v=19$m=65536,t=3,p=4$d4O1hfQ4l4RIBHBhTMfwIQ$GTutQlmrN4kf7Ig2J0OrHxaO0V7rZiUeJ6fxRcGyGno"
+setup = false
+
+[gunicorn]
+port = "1111"
+host = "localhost"

@@ -2,4 +2,9 @@
 # testing for now.
 cd /home/luke/Plocha/Serverpanel/
 
-/home/luke/Plocha/Serverpanel/Libraries/bin/hypercorn app:app --bind 127.0.0.1:1111 
+host=$(python -c 'import tomllib; print(tomllib.load(open("config.toml", "rb"))["gunicorn"]["host"])')
+port=$(python -c 'import tomllib; print(tomllib.load(open("config.toml", "rb"))["gunicorn"]["port"])')
+
+CONNECTION="$host:$port"
+
+/home/luke/Plocha/Serverpanel/Libraries/bin/gunicorn app:app --bind $CONNECTION --workers 4
