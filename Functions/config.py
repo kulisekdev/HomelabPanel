@@ -40,4 +40,4 @@ def set_config(file: str, section: str, name: str, value):
     except PermissionError:
         return {"msg": f"Permissions denied, check file permissions.", "success": False}
     except Exception:
-        return {"msg": f"General Exception: {traceback.format_exc()}", "success": False}
+        return {"msg": f"Exception: {traceback.format_exc()}", "success": False}

@@ -448,12 +448,41 @@
        CPU / RAM
     ───────────────────────────────────── */
 
-    .stat-content {
+    .system-stats {
+        display: grid;
+
+        grid-template-columns: 1fr 1fr;
+
+        gap: 1rem;
+
         padding: 1rem;
     }
 
+    .system-stat {
+        min-width: 0;
+    }
+
+    .system-stat-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        font-size: 0.75rem;
+    }
+
+    .system-stat-name {
+        color: #d4d4d4;
+        font-weight: 500;
+    }
+
+    .system-stat-percent {
+        color: #737373;
+    }
+
     .stat-value {
-        font-size: 1.5rem;
+        margin-top: 0.75rem;
+
+        font-size: 1.35rem;
         font-weight: 600;
     }
 
@@ -462,6 +491,10 @@
 
         font-size: 0.7rem;
         color: #737373;
+
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 
     .progress {
@@ -486,6 +519,83 @@
         background: #3b82f6;
 
         transition: width 0.4s ease;
+    }
+
+
+    /* ─────────────────────────────────────
+       Pinned services
+    ───────────────────────────────────── */
+
+    .services-list {
+        height: calc(100% - 49px);
+
+        overflow: hidden;
+    }
+
+    .service {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        padding: 0.65rem 1rem;
+
+        border-bottom: 1px solid #1f1f1f;
+    }
+
+    .service:last-child {
+        border-bottom: none;
+    }
+
+    .service-name {
+        min-width: 0;
+
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco,
+            Consolas, "Liberation Mono", "Courier New", monospace;
+
+        font-size: 0.7rem;
+        color: #d4d4d4;
+
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .service-status {
+        flex-shrink: 0;
+
+        display: flex;
+        align-items: center;
+
+        gap: 0.4rem;
+
+        margin-left: 1rem;
+
+        font-size: 0.65rem;
+    }
+
+    .service-indicator {
+        width: 0.45rem;
+        height: 0.45rem;
+
+        border-radius: 50%;
+
+        background: #525252;
+    }
+
+    .service-status.running {
+        color: #a3a3a3;
+    }
+
+    .service-status.running .service-indicator {
+        background: #22c55e;
+    }
+
+    .service-status.stopped {
+        color: #737373;
+    }
+
+    .service-status.stopped .service-indicator {
+        background: #525252;
     }
 
 
@@ -594,10 +704,15 @@
         }
 
         .disk-list,
-        .logs {
+        .logs,
+        .services-list {
             height: auto;
             max-height: 16rem;
             overflow-y: auto;
+        }
+
+        .system-stats {
+            grid-template-columns: 1fr 1fr;
         }
     }
 
@@ -626,7 +741,7 @@
             padding: 0.75rem;
         }
 
-        .stat-content,
+        .system-stats,
         .machine-info {
             padding: 0.75rem;
         }
@@ -634,14 +749,19 @@
         .disk {
             padding: 0.65rem 0.75rem;
         }
+
+        .system-stats {
+            grid-template-columns: 1fr;
+        }
     }
-</style>
+    </style>
 </head>
 
 <body>
 
     <!-- Navigation overlay -->
     <div id="menu-overlay" class="menu-overlay"></div>
+
 
     <!-- Navigation -->
     <nav id="menu" class="menu">
@@ -806,54 +926,120 @@
             <!-- Right side -->
             <div class="right-column">
 
-                <!-- CPU -->
+                <!-- CPU + RAM -->
                 <section class="card">
 
                     <div class="card-header">
 
                         <span class="card-title">
-                            CPU
+                            System usage
                         </span>
 
-                        <span
-                            id="cpu-percent"
-                            class="card-subtitle"
-                        >
-                            —
+                        <span class="card-subtitle">
+                            CPU / RAM
                         </span>
 
                     </div>
 
-                    <div class="stat-content">
+                    <div class="system-stats">
 
-                        <div
-                            id="cpu-name"
-                            class="stat-detail"
-                        >
-                            Loading...
-                        </div>
+                        <!-- CPU -->
 
-                        <div
-                            id="cpu-percent-detail"
-                            class="stat-value"
-                        >
-                            —
-                        </div>
+                        <div class="system-stat">
 
-                        <div class="progress">
+                            <div class="system-stat-header">
+
+                                <span class="system-stat-name">
+                                    CPU
+                                </span>
+
+                                <span
+                                    id="cpu-percent"
+                                    class="system-stat-percent"
+                                >
+                                    —
+                                </span>
+
+                            </div>
 
                             <div
-                                id="cpu-progress"
-                                class="progress-bar"
-                            ></div>
+                                id="cpu-percent-detail"
+                                class="stat-value"
+                            >
+                                —
+                            </div>
+
+                            <div
+                                id="cpu-name"
+                                class="stat-detail"
+                            >
+                                Loading...
+                            </div>
+
+                            <div class="progress">
+
+                                <div
+                                    id="cpu-progress"
+                                    class="progress-bar"
+                                ></div>
+
+                            </div>
+
+                            <div
+                                id="cpu-details"
+                                class="stat-detail"
+                            >
+                                —
+                            </div>
 
                         </div>
 
-                        <div
-                            id="cpu-details"
-                            class="stat-detail"
-                        >
-                            —
+
+                        <!-- RAM -->
+
+                        <div class="system-stat">
+
+                            <div class="system-stat-header">
+
+                                <span class="system-stat-name">
+                                    RAM
+                                </span>
+
+                                <span
+                                    id="ram-total"
+                                    class="system-stat-percent"
+                                >
+                                    —
+                                </span>
+
+                            </div>
+
+                            <div
+                                id="ram-used"
+                                class="stat-value"
+                            >
+                                —
+                            </div>
+
+                            <div
+                                id="ram-available"
+                                class="stat-detail"
+                            >
+                                —
+                            </div>
+
+                            <div class="progress">
+
+                                <div
+                                    id="ram-progress"
+                                    class="progress-bar"
+                                ></div>
+
+                            </div>
+
+                            <div class="stat-detail">
+                                Memory usage
+                            </div>
 
                         </div>
 
@@ -862,53 +1048,28 @@
                 </section>
 
 
-                <!-- RAM -->
+                <!-- Pinned services -->
                 <section class="card">
 
                     <div class="card-header">
 
                         <span class="card-title">
-                            Memory
+                            Pinned services
                         </span>
 
                         <span class="card-subtitle">
-                            RAM
+                            Systemd
                         </span>
 
                     </div>
 
-                    <div class="stat-content">
-
-                        <div
-                            id="ram-used"
-                            class="stat-value"
-                        >
-                            —
+                    <div
+                        id="services-list"
+                        class="services-list"
+                    >
+                        <div class="empty">
+                            Loading services...
                         </div>
-
-                        <div
-                            id="ram-available"
-                            class="stat-detail"
-                        >
-                            —
-                        </div>
-
-                        <div class="progress">
-
-                            <div
-                                id="ram-progress"
-                                class="progress-bar"
-                            ></div>
-
-                        </div>
-
-                        <div
-                            id="ram-total"
-                            class="stat-detail"
-                        >
-                            —
-                        </div>
-
                     </div>
 
                 </section>
@@ -1010,10 +1171,13 @@
         ───────────────────────────────────── */
 
         socket.on("connect", () => {
+
             console.log("Connected to Socket.IO");
 
             getUsage();
             getRecentLogs();
+            getPinnedServices();
+
         });
 
         socket.on("disconnect", () => {
@@ -1082,7 +1246,7 @@
                     `${ramAvailable.toFixed(2)} GB available`;
 
                 document.getElementById("ram-total").innerText =
-                    `${ramPercent.toFixed(1)}% used`;
+                    `${ramPercent.toFixed(1)}%`;
 
                 document.getElementById("ram-progress").style.width =
                     `${Math.min(ramPercent, 100)}%`;
@@ -1177,6 +1341,82 @@
                 `;
 
                 container.appendChild(element);
+
+            });
+        }
+
+
+        /* ─────────────────────────────────────
+           Pinned services
+        ───────────────────────────────────── */
+
+        function getPinnedServices() {
+
+            socket.emit("get_pinned_services", (data) => {
+
+                renderPinnedServices(data);
+
+            });
+        }
+
+
+        function renderPinnedServices(services) {
+
+            const container =
+                document.getElementById("services-list");
+
+            container.innerHTML = "";
+
+
+            if (!services || services.length === 0) {
+
+                container.innerHTML = `
+                    <div class="empty">
+                        No pinned services.
+                    </div>
+                `;
+
+                return;
+            }
+
+
+            services.forEach((service) => {
+
+                const element =
+                    document.createElement("div");
+
+                element.className = "service";
+
+
+                const statusClass =
+                    service.status
+                        ? "running"
+                        : "stopped";
+
+                const statusText =
+                    service.status
+                        ? "Running"
+                        : "Stopped";
+
+
+                element.innerHTML = `
+
+                    <span class="service-name">
+                        ${escapeHtml(service.name)}
+                    </span>
+
+                    <span class="service-status ${statusClass}">
+
+                        <span class="service-indicator"></span>
+
+                        ${statusText}
+
+                    </span>
+
+                `;
+
+                container.appendChild(element);
+
             });
         }
 
@@ -1207,13 +1447,6 @@
                 }
 
 
-                /*
-                 * The dashboard only has enough
-                 * room for a few lines.
-                 *
-                 * The newest entries are shown.
-                 */
-
                 data.slice(-8).forEach((entry) => {
 
                     const element =
@@ -1224,6 +1457,7 @@
                     element.textContent = entry;
 
                     container.appendChild(element);
+
                 });
 
             });
@@ -1242,6 +1476,7 @@
                 .replaceAll(">", "&gt;")
                 .replaceAll('"', "&quot;")
                 .replaceAll("'", "&#039;");
+
         }
 
 
@@ -1253,6 +1488,7 @@
 
             getUsage();
             getRecentLogs();
+            getPinnedServices();
 
         }, 5000);
 

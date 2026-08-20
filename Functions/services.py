@@ -1,10 +1,11 @@
-import pystemd.systemd1
-from pystemd.systemd1 import Unit, Manager
+from pystemd.systemd1 import Unit, manager
 from Functions.errors import FileFormatError, ServiceError
 from traceback import format_exc
 from datetime import datetime, timezone
-manager = Manager()
-manager.load()
+from Functions.config import set_config, get_config
+import os
+from pathlib import Path
+
 
 def start_service(name: str) -> dict:
     try:
@@ -302,3 +303,40 @@ def service_status(name: str) -> dict:
             "msg": f"Error: {format_exc()}",
             "success": False
         }
+
+def list_services() -> list:
+    finalservicedir = []
+
+    for path in Path("/etc/systemd/system/").iterdir():
+        if path.is_file() and path.suffix== ".service":
+            finalservicedir.append(path.name)
+
+    return finalservicedir
+
+
+def add_pinned(name: str):
+    if not name:
+        return {"success": False, "msg": "Expected str for name, got None"}
+    name = str(name)
+    currently_pinned: list = get_config("config.toml")["user"]["pinned_services"]
+
+    if name not in currently_pinned:
+        currently_pinned.append(name)
+        set_config(file="config.toml", section="user", name="pinned_services", value=currently_pinned)
+        return {"success": True}
+    else:
+        return {"success": False, "msg": f"'{name}' is already pinned."}
+
+def remove_pinned(name: str):
+    if not name:
+        return {"success": False, "msg": "Expected str for name, got None"}
+    name = str(name)
+    currently_pinned: list = get_config("config.toml")["user"]["pinned_services"]
+
+    if name not in currently_pinned:
+        return {"success": False, "msg": f"'{name}' is not in pinned services."}
+
+    currently_pinned.remove(name)
+    set_config("config.toml", "user", "pinned_services", currently_pinned)
+    return {"success": True}
+    

@@ -1,10 +1,15 @@
 [app]
 name = "Homelab Management Panel"
 footer = "Made by kulisak!"
-panel_password = "$argon2id$v=19$m=65536,t=3,p=4$MV7MiDlTctMjRsJQuxsFwg$7exfvTe0fD/HgBiwNfBYAsgNTchptMjwZO/2Mi/oVuU"
-current_cookie = "$argon2id$v=19$m=65536,t=3,p=4$DgX9T5G0jsFQvW26e3k9kw$cE2ED88HHm6X/i7aiTqoT29i9smH794hwAeB0Ol3rQ8"
-setup = false
+panel_password = "$argon2id$v=19$m=65536,t=3,p=4$mWofgvDOKoNUtsRiMEFfCg$G4Gl+Zlc459NN3A846lbV4ubfOTZzr/bh4yUodTg+I8"
+current_cookie = "$argon2id$v=19$m=65536,t=3,p=4$4z2ldzumd8T3H8rjzkdxtw$hQZ3rBe6S9foNis9c0j/3FqVx+J3kXmlNdeiddTGneI"
+setup = true
 
 [gunicorn]
-port = "1111"
-host = "localhost"
+port = "8080"
+host = "127.0.0.1"
+
+[user]
+pinned_services = [
+    "testservice.service",
+]

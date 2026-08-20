@@ -1,7 +1,6 @@
 import psutil
 import platform
-
-
+import subprocess
 def get_disks() -> dict:
     disks = psutil.disk_partitions(all=True)
 
@@ -89,3 +88,18 @@ def get_system_usage() -> dict:
         "disk": get_disks()
     }
     return response
+
+def get_ips():
+    final = ""
+    try:
+        public = subprocess.check_output(
+            ["curl", "https://api4.ipify.org"],timeout=3, text=True
+        )
+        local = subprocess.check_output(
+            ["ip", "route", "get", "1.1.1.1"], text=True
+        )
+        local = local.split()[6]
+        return f"🏠 {local}  •  🌐 {public}"
+    except Exception:
+        return local.split()[6]
+

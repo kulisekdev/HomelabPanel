@@ -1,8 +1,8 @@
 from flask import render_template, redirect, request, Flask, send_from_directory, url_for, make_response, jsonify
 from flask_socketio import SocketIO
 from Functions.config import get_config, set_config
-from Functions.usage import get_system_usage
-from Functions.services import start_service, stop_service, enable_service, disable_service, service_status
+from Functions.usage import get_system_usage, get_ips
+from Functions.services import start_service, stop_service, enable_service, disable_service, service_status, add_pinned, remove_pinned
 from Functions.hash import hash_password, verify_hashed_password
 from Functions.logger import LOG_DIR, logger
 from traceback import format_exc
@@ -20,6 +20,9 @@ def index():
     config_app = config["app"]
     if verify_hashed_password(get_config("config.toml")["app"]["current_cookie"], request.cookies.get("session")):
         return redirect(url_for("panel_home"))
+
+    if not config_app["setup"]:
+        return redirect(url_for("setup_panel"))
 
     if request.method == "POST":
         if verify_hashed_password(get_config("config.toml")["app"]["current_cookie"], request.cookies.get("session")):
@@ -41,7 +44,7 @@ def index():
                 return render_template("login.html", error=True, info={
                     "title": config_app["name"],
                     "footer": config_app["footer"],
-                    "ip": request.host.split(":")[0],
+                    "ip": get_ips(),
                     "hostname": socket.gethostname()
                 })
 
@@ -51,7 +54,7 @@ def index():
         info={
             "title": config_app["name"],
             "footer": config_app["footer"],
-            "ip": request.host.split(":")[0],
+            "ip": get_ips(),
             "hostname": socket.gethostname()
         })
 @app.route("/panel")
@@ -62,11 +65,10 @@ def panel_home():
         return render_template("home.html", info={
             "title": config_app["name"],
             "footer": config_app["footer"],
-            "ip": request.host.split(":")[0],
+            "ip": get_ips(),
             "hostname": socket.gethostname(),
         })
-    return redirect(url_for("index"))
-
+    return redirect(url_for("index"))    
 
 @app.route("/panel/setup", methods=["GET","POST"])
 def setup_panel():
@@ -76,7 +78,7 @@ def setup_panel():
         return render_template("error.html", info={
             "title": config_app["name"],
             "footer": config_app["footer"],
-            "ip": request.host.split(":")[0],
+            "ip": get_ips(),
             "hostname": socket.gethostname(),
             "error": "Error!",
             "error_desc": "Panel already has been set-up. if you'd wish to set up again, toggle setup to false in config."
@@ -86,16 +88,18 @@ def setup_panel():
         password = form.get("passwd")
         print(f"got request: {request.method}")
 
-        if password:
+        if password and form.get("port") and form.get("host"):
             hashedPass = hash_password(password)
             if hashedPass["success"]:
                 set_pass = set_config("config.toml", "app", "panel_password", hashedPass["result"])
-                if set_pass["success"]:
+                set_host = set_config("config.toml", "gunicorn", "host", form.get("host"))
+                set_port = set_config("config.toml", "gunicorn", "port", form.get("port"))
+                if set_pass["success"] and set_host["success"] and set_port["success"]:
                     try:
-                        verify_password = verify_hashed_password(get_config("config.toml")["app"]["panel_password"], password)
-                        print("hash is valid.")
-                        if verify_password:
-                            return redirect(url_for("index"))
+                        logger.info(f"panel has been setup successfully! IP: {form.get("host")}, PORT: {form.get("port")}")
+                        result = set_config(file="config.toml", section="app", name="setup", value=True)
+                        print(result)
+                        return redirect(url_for("index"))
                     except Exception as e:
                         return {"msg": f"Error: {format_exc()}", "success": False}
                 else:
@@ -107,7 +111,7 @@ def setup_panel():
     return render_template("setup.html", info={
             "title": config_app["name"],
             "footer": config_app["footer"],
-            "ip": request.host.split(":")[0],
+            "ip": get_ips(),
             "hostname": socket.gethostname(),
     })
 
@@ -140,3 +144,24 @@ def panel_logs():
         encoding="utf-8"
     ).splitlines()[-50:]
     return logs
+
+@sio.on("get_pinned_services")
+def pinned_services():
+    currently_pinned: list = get_config("config.toml")["user"]["pinned_services"]
+
+    response_list = []
+
+    for service in currently_pinned:
+        status = service_status(service)
+
+        list_formula = {
+            "name": status["name"],
+            "status": True if status["activestate"] == "active" else False
+        }
+        if status["name"] in response_list:
+            continue
+
+        response_list.append(list_formula)
+
+    print(response_list)
+    return response_list
