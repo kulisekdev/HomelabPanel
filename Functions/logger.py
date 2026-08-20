@@ -23,3 +23,4 @@ log_handler.setFormatter(
 )
 
 logger.addHandler(log_handler)
+logger.info("Logging started!")

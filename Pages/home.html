@@ -245,6 +245,10 @@
     .dashboard-title {
         flex-shrink: 0;
         margin-bottom: 1rem;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
     }
 
     .dashboard-title h1 {
@@ -257,6 +261,18 @@
 
         font-size: 0.75rem;
         color: #737373;
+    }
+
+    .server-time {
+        margin-left: auto;
+
+        font-size: 1.5rem;
+        font-weight: 600;
+
+        color: #d4d4d4;
+
+        font-variant-numeric: tabular-nums;
+        white-space: nowrap;
     }
 
 
@@ -785,32 +801,20 @@
 
         <div class="menu-items">
 
-            <a
-                href="/home"
-                class="menu-item active"
-            >
+            <a href="/panel" class="menu-item">
                 Dashboard
             </a>
 
-            <a
-                href="/services"
-                class="menu-item"
-            >
+            <a href="/panel/home" class="menu-item active">
                 Services
             </a>
 
-            <a
-                href="/logs"
-                class="menu-item"
-            >
+            <a href="/panel/logs" class="menu-item">
                 Logs
             </a>
 
-            <a
-                href="/system"
-                class="menu-item"
-            >
-                System
+            <a href="/panel/firewall" class="menu-item">
+                firewall
             </a>
 
         </div>
@@ -845,7 +849,6 @@
             <span class="brand">
                 {{ info.name }}
             </span>
-
         </div>
 
     </header>
@@ -863,7 +866,9 @@
             <p>
                 System overview and activity.
             </p>
-
+            <span id="server-time" class="server-time">
+                --:--:-- @ --.--.----
+            </span>
         </div>
 
 
@@ -1143,7 +1148,11 @@
 
         const socket = io();
 
-
+        function getServerTime() {
+            socket.emit("get_time", (data) => {
+                document.getElementById("server-time").innerText = data;
+            });
+}
         /* ─────────────────────────────────────
            Navigation
         ───────────────────────────────────── */
@@ -1489,8 +1498,10 @@
             getUsage();
             getRecentLogs();
             getPinnedServices();
-
         }, 5000);
+        setInterval(() => {
+            getServerTime();
+        }, 1000);
 
     </script>
 

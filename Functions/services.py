@@ -3,6 +3,7 @@ from Functions.errors import FileFormatError, ServiceError
 from traceback import format_exc
 from datetime import datetime, timezone
 from Functions.config import set_config, get_config
+from Functions.logger import logger
 import os
 from pathlib import Path
 
@@ -36,7 +37,7 @@ def start_service(name: str) -> dict:
 
 
             
-
+            logger.info(f"Functions/services.py/enable_service: {name} has been activated.")
             return {"msg": f"'{name} started successfully!", "success": True}
     except ServiceError:
         return {
@@ -86,6 +87,7 @@ def stop_service(name: str) -> dict:
             
             if unit.Unit.ActiveState == b"active":
                 unit.Unit.Stop(b"replace")
+            logger.info(f"Functions/services.py/enable_service: {name} has been stopped.")
             return {"msg": f"'{name} stopped successfully!", "success": True}
         
     except ServiceError:
@@ -133,6 +135,7 @@ def enable_service(name: str) -> dict:
 
             if state == b"disabled":
                 manager.Manager.EnableUnitFiles([name.encode()], False, False)
+            logger.info(f"Functions/services.py/enable_service: {name} has been enabled.")
 
             return {"msg": f"'{name} enabled successfully!", "success": True}
         
@@ -180,7 +183,7 @@ def disable_service(name: str) -> dict:
 
             if state == b"enabled":
                 manager.Manager.DisableUnitFiles([name.encode()], False)
-
+            logger.info(f"Functions/services.py/enable_service: {name} has been disabled.")
             return {"msg": f"'{name} enabled successfully!", "success": True}
         
     except ServiceError:
@@ -222,7 +225,7 @@ def restart_service(name: str) -> dict:
             
 
             unit.Unit.Restart(b"replace")
-
+            logger.info(f"Functions/services.py/enable_service: {name} has been restarted.")
             return {"msg": f"'{name} restarted successfully!", "success": True}
     except ServiceError as e:
         return {
@@ -277,8 +280,8 @@ def service_status(name: str) -> dict:
                 "activestate": unit.Unit.ActiveState.decode(),
                 "description": unit.Unit.Description.decode(),
                 "substate": unit.Unit.SubState.decode(),
-                "started_at": timestampEnterActiveState,
-                "stopped_at": timestampExitActiveState,
+                "started_at": str(timestampEnterActiveState),
+                "stopped_at": str(timestampExitActiveState),
             }
             
             return serviceinfo
@@ -323,6 +326,7 @@ def add_pinned(name: str):
     if name not in currently_pinned:
         currently_pinned.append(name)
         set_config(file="config.toml", section="user", name="pinned_services", value=currently_pinned)
+        logger.info(f"Functions/services.py/enable_service: {name} has been pinned.")
         return {"success": True}
     else:
         return {"success": False, "msg": f"'{name}' is already pinned."}
@@ -335,8 +339,10 @@ def remove_pinned(name: str):
 
     if name not in currently_pinned:
         return {"success": False, "msg": f"'{name}' is not in pinned services."}
-
-    currently_pinned.remove(name)
-    set_config("config.toml", "user", "pinned_services", currently_pinned)
-    return {"success": True}
-    
+    if name in currently_pinned:
+        logger.info(f"Functions/services.py/enable_service: {name} has been unpinned.")
+        currently_pinned.remove(name)
+        set_config("config.toml", "user", "pinned_services", currently_pinned)
+        return {"success": True}
+    else:
+        return {"success": False, "msg": f"'{name}' is already pinned."}

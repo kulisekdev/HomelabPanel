@@ -3,9 +3,1375 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+
+    <title>Services</title>
+
+    <style>
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        font-family: ui-sans-serif, system-ui, -apple-system,
+            BlinkMacSystemFont, "Segoe UI", Roboto,
+            "Helvetica Neue", Arial, sans-serif;
+
+        min-height: 100vh;
+
+        background: #0a0a0a;
+        color: #f5f5f5;
+
+        display: flex;
+        flex-direction: column;
+
+        overflow: hidden;
+    }
+
+
+    /* ─────────────────────────────────────
+       Header
+    ───────────────────────────────────── */
+
+    header {
+        flex-shrink: 0;
+        border-bottom: 1px solid #262626;
+    }
+
+    .header-container {
+        width: 94%;
+        max-width: 110rem;
+
+        margin: 0 auto;
+
+        display: flex;
+        align-items: center;
+
+        padding: 1rem 0;
+    }
+
+    .menu-button {
+        width: 2rem;
+        height: 2rem;
+
+        margin-right: 0.75rem;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border: 1px solid #262626;
+        border-radius: 0.375rem;
+
+        background: #171717;
+        color: #a3a3a3;
+
+        cursor: pointer;
+
+        transition:
+            background-color 0.15s ease,
+            color 0.15s ease,
+            border-color 0.15s ease;
+    }
+
+    .menu-button:hover {
+        background: #262626;
+        border-color: #404040;
+        color: #f5f5f5;
+    }
+
+    .menu-button svg {
+        width: 1rem;
+        height: 1rem;
+    }
+
+    .brand {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: #3b82f6;
+    }
+
+    .server-time {
+        margin-left: auto;
+
+        font-size: 1rem;
+        font-weight: 600;
+
+        color: #f5f5f5;
+
+        font-variant-numeric: tabular-nums;
+    }
+
+
+    /* ─────────────────────────────────────
+       Navigation
+    ───────────────────────────────────── */
+
+    .menu {
+        position: fixed;
+        top: 0;
+        left: 0;
+
+        z-index: 100;
+
+        width: 17rem;
+        height: 100vh;
+
+        padding: 1rem;
+
+        background: #111111;
+        border-right: 1px solid #262626;
+
+        transform: translateX(-100%);
+        transition: transform 0.2s ease;
+    }
+
+    .menu.open {
+        transform: translateX(0);
+    }
+
+    .menu-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        padding-bottom: 1rem;
+        margin-bottom: 0.75rem;
+
+        border-bottom: 1px solid #262626;
+    }
+
+    .menu-title {
+        font-size: 0.875rem;
+        font-weight: 600;
+    }
+
+    .close-menu {
+        width: 2rem;
+        height: 2rem;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border: 1px solid #262626;
+        border-radius: 0.375rem;
+
+        background: transparent;
+        color: #737373;
+
+        cursor: pointer;
+    }
+
+    .close-menu:hover {
+        color: #f5f5f5;
+        background: #1f1f1f;
+    }
+
+    .menu-items {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .menu-item {
+        display: flex;
+        align-items: center;
+
+        width: 100%;
+
+        padding: 0.625rem 0.75rem;
+
+        border: 1px solid transparent;
+        border-radius: 0.375rem;
+
+        background: transparent;
+        color: #a3a3a3;
+
+        font-size: 0.875rem;
+        text-decoration: none;
+
+        cursor: pointer;
+
+        transition:
+            background-color 0.15s ease,
+            color 0.15s ease;
+    }
+
+    .menu-item:hover {
+        background: #1f1f1f;
+        color: #f5f5f5;
+    }
+
+    .menu-item.active {
+        background: #171717;
+        border-color: #262626;
+        color: #3b82f6;
+    }
+
+    .menu-overlay {
+        position: fixed;
+        inset: 0;
+
+        z-index: 90;
+
+        background: rgba(0, 0, 0, 0.5);
+
+        opacity: 0;
+        pointer-events: none;
+
+        transition: opacity 0.2s ease;
+    }
+
+    .menu-overlay.open {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+
+    /* ─────────────────────────────────────
+       Main
+    ───────────────────────────────────── */
+
+    main {
+        flex: 1;
+        min-height: 0;
+
+        width: 94%;
+        max-width: 110rem;
+
+        margin: 0 auto;
+
+        padding: 1.5rem 0;
+
+        display: flex;
+        flex-direction: column;
+    }
+
+    .page-title {
+        flex-shrink: 0;
+        margin-bottom: 1rem;
+    }
+
+    .page-title h1 {
+        font-size: 1.25rem;
+        font-weight: 600;
+    }
+
+    .page-title p {
+        margin-top: 0.25rem;
+
+        font-size: 0.75rem;
+        color: #737373;
+    }
+
+
+    /* ─────────────────────────────────────
+       Services
+    ───────────────────────────────────── */
+
+    .services {
+        flex: 1;
+        min-height: 0;
+
+        display: flex;
+        flex-direction: column;
+
+        gap: 0.6rem;
+
+        overflow-y: auto;
+        padding-right: 0.25rem;
+    }
+
+    .service-card {
+        flex-shrink: 0;
+
+        border: 1px solid #262626;
+        border-radius: 0.5rem;
+
+        background: #171717;
+
+        overflow: hidden;
+    }
+
+
+    /* ─────────────────────────────────────
+       Service header
+    ───────────────────────────────────── */
+
+    .service-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        width: 100%;
+
+        padding: 0.85rem 1rem;
+
+        border: none;
+
+        background: transparent;
+        color: inherit;
+
+        text-align: left;
+
+        cursor: pointer;
+    }
+
+    .service-header:hover {
+        background: #1c1c1c;
+    }
+
+    .service-left {
+        min-width: 0;
+
+        display: flex;
+        align-items: center;
+
+        gap: 0.75rem;
+    }
+
+    .service-arrow {
+        flex-shrink: 0;
+
+        color: #525252;
+
+        font-size: 0.7rem;
+
+        transition: transform 0.2s ease;
+    }
+
+    .service-card.open .service-arrow {
+        transform: rotate(90deg);
+    }
+
+    .service-name {
+        min-width: 0;
+
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco,
+            Consolas, "Liberation Mono", "Courier New", monospace;
+
+        font-size: 0.75rem;
+        color: #d4d4d4;
+
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .service-status {
+        flex-shrink: 0;
+
+        display: flex;
+        align-items: center;
+
+        gap: 0.4rem;
+
+        font-size: 0.65rem;
+
+        color: #737373;
+    }
+
+    .status-indicator {
+        width: 0.45rem;
+        height: 0.45rem;
+
+        border-radius: 50%;
+
+        background: #525252;
+    }
+
+    .service-status.running {
+        color: #a3a3a3;
+    }
+
+    .service-status.running .status-indicator {
+        background: #22c55e;
+    }
+
+    .service-status.stopped .status-indicator {
+        background: #525252;
+    }
+
+
+    /* ─────────────────────────────────────
+       Service body
+    ───────────────────────────────────── */
+
+    .service-body {
+        display: none;
+
+        padding: 1rem;
+
+        border-top: 1px solid #262626;
+    }
+
+    .service-card.open .service-body {
+        display: block;
+    }
+
+    .service-description {
+        margin-bottom: 1rem;
+
+        font-size: 0.75rem;
+        color: #737373;
+    }
+
+    .service-details {
+        display: grid;
+
+        grid-template-columns: repeat(3, 1fr);
+
+        gap: 0.75rem;
+
+        margin-bottom: 1rem;
+    }
+
+    .detail {
+        padding: 0.65rem;
+
+        border: 1px solid #262626;
+        border-radius: 0.375rem;
+
+        background: #111111;
+    }
+
+    .detail-label {
+        font-size: 0.6rem;
+        color: #525252;
+    }
+
+    .detail-value {
+        margin-top: 0.2rem;
+
+        font-size: 0.7rem;
+        color: #d4d4d4;
+    }
+
+
+    /* ─────────────────────────────────────
+       Controls
+    ───────────────────────────────────── */
+
+    .controls {
+        display: flex;
+        flex-wrap: wrap;
+
+        gap: 0.5rem;
+    }
+
+    .action-button {
+        padding: 0.5rem 0.75rem;
+
+        border: 1px solid #303030;
+        border-radius: 0.375rem;
+
+        background: #1c1c1c;
+        color: #a3a3a3;
+
+        font-size: 0.7rem;
+
+        cursor: pointer;
+
+        transition:
+            background-color 0.15s ease,
+            color 0.15s ease,
+            border-color 0.15s ease;
+    }
+
+    .action-button:hover {
+        background: #262626;
+        border-color: #404040;
+        color: #f5f5f5;
+    }
+
+    .action-button.primary {
+        color: #60a5fa;
+    }
+
+    .action-button.danger:hover {
+        color: #f87171;
+    }
+
+    .action-button.pin {
+        margin-left: auto;
+    }
+
+
+    /* ─────────────────────────────────────
+       Empty
+    ───────────────────────────────────── */
+
+    .empty {
+        padding: 1rem;
+
+        font-size: 0.7rem;
+        color: #525252;
+    }
+
+
+    /* ─────────────────────────────────────
+       Footer
+    ───────────────────────────────────── */
+
+    footer {
+        flex-shrink: 0;
+
+        border-top: 1px solid #262626;
+    }
+
+    .footer-content {
+        width: 94%;
+        max-width: 110rem;
+
+        margin: 0 auto;
+
+        padding: 0.75rem 0;
+
+        text-align: center;
+
+        font-size: 0.7rem;
+        color: #525252;
+    }
+
+
+    /* ─────────────────────────────────────
+       Responsive
+    ───────────────────────────────────── */
+
+    @media (max-width: 700px) {
+
+        body {
+            overflow: auto;
+        }
+
+        main {
+            min-height: auto;
+        }
+
+        .services {
+            overflow-y: visible;
+        }
+
+        .service-details {
+            grid-template-columns: 1fr;
+        }
+
+        .action-button.pin {
+            margin-left: 0;
+        }
+
+        .server-time {
+            font-size: 0.8rem;
+        }
+
+    }
+
+    </style>
 </head>
+
 <body>
-    
+
+    <!-- Navigation overlay -->
+    <div id="menu-overlay" class="menu-overlay"></div>
+
+
+    <!-- Navigation -->
+    <nav id="menu" class="menu">
+
+        <div class="menu-header">
+
+            <span class="menu-title">
+                Navigation
+            </span>
+
+            <button
+                id="close-menu"
+                class="close-menu"
+                type="button"
+                aria-label="Close menu"
+            >
+                ×
+            </button>
+
+        </div>
+
+        <div class="menu-items">
+
+            <a href="/panel" class="menu-item">
+                Dashboard
+            </a>
+
+            <a href="/panel/home" class="menu-item active">
+                Services
+            </a>
+
+            <a href="/panel/logs" class="menu-item">
+                Logs
+            </a>
+
+            <a href="/panel/firewall" class="menu-item">
+                firewall
+            </a>
+
+        </div>
+
+    </nav>
+
+
+    <!-- Header -->
+    <header>
+
+        <div class="header-container">
+
+            <button
+                id="open-menu"
+                class="menu-button"
+                type="button"
+                aria-label="Open navigation"
+            >
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                >
+                    <path
+                        stroke-linecap="round"
+                        d="M4 7h16M4 12h16M4 17h16"
+                    />
+                </svg>
+            </button>
+
+            <span class="brand">
+                {{ info.name }}
+            </span>
+
+            <span id="server-time" class="server-time">
+                --:--:-- @ --.--.----
+            </span>
+
+        </div>
+
+    </header>
+
+
+    <!-- Main -->
+    <main>
+
+        <div class="page-title">
+
+            <h1>
+                Services
+            </h1>
+
+            <p>
+                Manage systemd services.
+            </p>
+
+        </div>
+
+
+        <div id="services" class="services">
+
+            <div class="empty">
+                Loading services...
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <!-- Footer -->
+    <footer>
+
+        <div class="footer-content">
+            &copy; 2026 {{ info.footer }}
+        </div>
+
+    </footer>
+
+
+    <script src="/static/socket.io.min.js"></script>
+
+    <script>
+
+        const socket = io();
+
+
+        /* ─────────────────────────────────────
+           Navigation
+        ───────────────────────────────────── */
+
+        const menu = document.getElementById("menu");
+        const overlay = document.getElementById("menu-overlay");
+
+        document.getElementById("open-menu").addEventListener("click", () => {
+            menu.classList.add("open");
+            overlay.classList.add("open");
+        });
+
+        document.getElementById("close-menu")
+            .addEventListener("click", closeMenu);
+
+        overlay.addEventListener("click", closeMenu);
+
+        function closeMenu() {
+            menu.classList.remove("open");
+            overlay.classList.remove("open");
+        }
+
+
+        /* ─────────────────────────────────────
+           Socket.IO
+        ───────────────────────────────────── */
+
+        socket.on("connect", () => {
+
+            console.log("Connected to Socket.IO");
+
+            get_servicelist();
+            getServerTime();
+
+        });
+
+        socket.on("disconnect", () => {
+
+            console.log("Disconnected from Socket.IO");
+
+        });
+
+
+        /* ─────────────────────────────────────
+           Server time
+        ───────────────────────────────────── */
+
+        function getServerTime() {
+
+            socket.emit("get_time", (data) => {
+
+                if (data !== undefined && data !== null) {
+
+                    document.getElementById("server-time").innerText =
+                        data;
+
+                }
+
+            });
+
+        }
+
+
+        /* ─────────────────────────────────────
+           Service API
+        ───────────────────────────────────── */
+
+        function get_servicelist() {
+
+            socket.emit(
+                "service",
+                {"action": "list"},
+                (data) => {
+
+                    renderServices(data);
+
+                }
+            );
+        }
+
+
+        function disable_service(service, callback) {
+
+            socket.emit(
+                "service",
+                {"action": "disable", "name": service},
+                (data) => {
+
+                    handleActionResponse(data, service);
+
+                    if (callback) {
+                        callback(data);
+                    }
+
+                }
+            );
+        }
+
+
+        function enable_service(service, callback) {
+
+            socket.emit(
+                "service",
+                {"action": "enable", "name": service},
+                (data) => {
+
+                    handleActionResponse(data, service);
+
+                    if (callback) {
+                        callback(data);
+                    }
+
+                }
+            );
+        }
+
+
+        function start_service(service, callback) {
+
+            socket.emit(
+                "service",
+                {"action": "start", "name": service},
+                (data) => {
+
+                    handleActionResponse(data, service);
+
+                    if (callback) {
+                        callback(data);
+                    }
+
+                }
+            );
+        }
+
+
+        function stop_service(service, callback) {
+
+            socket.emit(
+                "service",
+                {"action": "stop", "name": service},
+                (data) => {
+
+                    handleActionResponse(data, service);
+
+                    if (callback) {
+                        callback(data);
+                    }
+
+                }
+            );
+        }
+
+
+        function service_status(service, callback) {
+
+            socket.emit(
+                "service",
+                {"action": "status", "name": service},
+                (data) => {
+
+                    if (callback) {
+                        callback(data);
+                    }
+
+                }
+            );
+        }
+
+
+        function pin_status(service, callback) {
+
+            socket.emit(
+                "service",
+                {"action": "pin_status", "name": service},
+                (pinned) => {
+
+                    if (callback) {
+                        callback(pinned === true);
+                    }
+
+                }
+            );
+        }
+
+
+        function pin_service(service) {
+
+            socket.emit(
+                "service",
+                {"action": "pin", "name": service},
+                (data) => {
+
+                    handleActionResponse(data, service);
+
+                    if (data && data.success) {
+
+                        setPinState(service, true);
+
+                    }
+
+                }
+            );
+        }
+
+
+        function remove_pinned_service(service) {
+
+            socket.emit(
+                "service",
+                {"action": "unpin", "name": service},
+                (data) => {
+
+                    handleActionResponse(data, service);
+
+                    if (data && data.success) {
+
+                        setPinState(service, false);
+
+                    }
+
+                }
+            );
+        }
+
+
+        /* ─────────────────────────────────────
+           Restart
+        ───────────────────────────────────── */
+
+        function restart_service(service) {
+
+            stop_service(service, (stopData) => {
+
+                if (!stopData || !stopData.success) {
+                    return;
+                }
+
+                start_service(service);
+
+            });
+
+        }
+
+
+        /* ─────────────────────────────────────
+           Responses
+        ───────────────────────────────────── */
+
+        function handleActionResponse(data, service) {
+
+            if (!data) {
+                return;
+            }
+
+            console.log(data.msg);
+
+            if (data.success) {
+
+                setTimeout(() => {
+
+                    updateService(service);
+
+                }, 250);
+
+            }
+
+        }
+
+
+        /* ─────────────────────────────────────
+           Pin state
+        ───────────────────────────────────── */
+
+        function setPinState(service, pinned) {
+
+            const card = document.querySelector(
+                `.service-card[data-service="${CSS.escape(service)}"]`
+            );
+
+            if (!card) {
+                return;
+            }
+
+            const button =
+                card.querySelector('[data-action="pin"], [data-action="unpin"]');
+
+            if (!button) {
+                return;
+            }
+
+            button.dataset.action =
+                pinned ? "unpin" : "pin";
+
+            button.innerText =
+                pinned ? "Unpin" : "Pin";
+
+        }
+
+
+        /* ─────────────────────────────────────
+           Render
+        ───────────────────────────────────── */
+
+        function renderServices(services) {
+
+            const container =
+                document.getElementById("services");
+
+            container.innerHTML = "";
+
+
+            if (!services || services.length === 0) {
+
+                container.innerHTML = `
+                    <div class="empty">
+                        No services found.
+                    </div>
+                `;
+
+                return;
+            }
+
+
+            services.forEach((service) => {
+
+                const card =
+                    document.createElement("div");
+
+                card.className = "service-card";
+
+                card.dataset.service = service;
+
+
+                card.innerHTML = `
+
+                    <button
+                        class="service-header"
+                        type="button"
+                    >
+
+                        <span class="service-left">
+
+                            <span class="service-arrow">
+                                ▶
+                            </span>
+
+                            <span class="service-name">
+                                ${escapeHtml(service)}
+                            </span>
+
+                        </span>
+
+                        <span
+                            class="service-status stopped"
+                            data-status
+                        >
+
+                            <span class="status-indicator"></span>
+
+                            Loading...
+
+                        </span>
+
+                    </button>
+
+
+                    <div class="service-body">
+
+                        <div
+                            class="service-description"
+                            data-description
+                        >
+                            Loading service information...
+                        </div>
+
+
+                        <div class="service-details">
+
+                            <div class="detail">
+
+                                <div class="detail-label">
+                                    Load state
+                                </div>
+
+                                <div
+                                    class="detail-value"
+                                    data-loadstate
+                                >
+                                    —
+                                </div>
+
+                            </div>
+
+
+                            <div class="detail">
+
+                                <div class="detail-label">
+                                    Active state
+                                </div>
+
+                                <div
+                                    class="detail-value"
+                                    data-activestate
+                                >
+                                    —
+                                </div>
+
+                            </div>
+
+
+                            <div class="detail">
+
+                                <div class="detail-label">
+                                    Sub state
+                                </div>
+
+                                <div
+                                    class="detail-value"
+                                    data-substate
+                                >
+                                    —
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="controls">
+
+                            <button
+                                class="action-button primary"
+                                data-action="start"
+                            >
+                                Start
+                            </button>
+
+                            <button
+                                class="action-button danger"
+                                data-action="stop"
+                            >
+                                Stop
+                            </button>
+
+                            <button
+                                class="action-button"
+                                data-action="restart"
+                            >
+                                Restart
+                            </button>
+
+                            <button
+                                class="action-button"
+                                data-action="enable"
+                            >
+                                Enable
+                            </button>
+
+                            <button
+                                class="action-button"
+                                data-action="disable"
+                            >
+                                Disable
+                            </button>
+
+                            <button
+                                class="action-button pin"
+                                data-action="pin"
+                            >
+                                Pin
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                `;
+
+
+                const header =
+                    card.querySelector(".service-header");
+
+
+                header.addEventListener("click", () => {
+
+                    card.classList.toggle("open");
+
+                    updateService(service);
+
+                });
+
+
+                card.querySelectorAll("[data-action]")
+                    .forEach((button) => {
+
+                        button.addEventListener("click", (event) => {
+
+                            event.stopPropagation();
+
+                            const action =
+                                button.dataset.action;
+
+
+                            if (action === "start") {
+
+                                start_service(service);
+
+                            }
+
+                            else if (action === "stop") {
+
+                                stop_service(service);
+
+                            }
+
+                            else if (action === "restart") {
+
+                                restart_service(service);
+
+                            }
+
+                            else if (action === "enable") {
+
+                                enable_service(service);
+
+                            }
+
+                            else if (action === "disable") {
+
+                                disable_service(service);
+
+                            }
+
+                            else if (action === "pin") {
+
+                                pin_service(service);
+
+                            }
+
+                            else if (action === "unpin") {
+
+                                remove_pinned_service(service);
+
+                            }
+
+                        });
+
+                    });
+
+
+                container.appendChild(card);
+
+                updateService(service);
+
+                pin_status(service, (pinned) => {
+
+                    setPinState(service, pinned);
+
+                });
+
+            });
+
+        }
+
+
+        /* ─────────────────────────────────────
+           Update status
+        ───────────────────────────────────── */
+
+        function updateService(service) {
+
+            const card =
+                document.querySelector(
+                    `.service-card[data-service="${CSS.escape(service)}"]`
+                );
+
+            if (!card) {
+                return;
+            }
+
+
+            service_status(service, (data) => {
+
+                if (!data) {
+                    return;
+                }
+
+
+                const active =
+                    data.activestate === "active";
+
+
+                const status =
+                    card.querySelector("[data-status]");
+
+
+                status.classList.remove(
+                    "running",
+                    "stopped"
+                );
+
+
+                status.classList.add(
+                    active
+                        ? "running"
+                        : "stopped"
+                );
+
+
+                status.innerHTML = `
+
+                    <span class="status-indicator"></span>
+
+                    ${active ? "Running" : "Stopped"}
+
+                `;
+
+
+                card.querySelector("[data-description]")
+                    .innerText =
+                        data.description ||
+                        "No description available.";
+
+
+                card.querySelector("[data-loadstate]")
+                    .innerText =
+                        data.loadstate || "—";
+
+
+                card.querySelector("[data-activestate]")
+                    .innerText =
+                        data.activestate || "—";
+
+
+                card.querySelector("[data-substate]")
+                    .innerText =
+                        data.substate || "—";
+
+            });
+
+        }
+
+
+        /* ─────────────────────────────────────
+           Helpers
+        ───────────────────────────────────── */
+
+        function escapeHtml(value) {
+
+            return String(value)
+                .replaceAll("&", "&amp;")
+                .replaceAll("<", "&lt;")
+                .replaceAll(">", "&gt;")
+                .replaceAll('"', "&quot;")
+                .replaceAll("'", "&#039;");
+
+        }
+
+
+        /* ─────────────────────────────────────
+           Time refresh
+        ───────────────────────────────────── */
+
+        setInterval(() => {
+
+            getServerTime();
+
+        }, 1000);
+
+    </script>
+
 </body>
 </html>

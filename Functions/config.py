@@ -1,7 +1,7 @@
 import tomllib
 import tomli_w
 import traceback
-
+from Functions.logger import logger
 def get_config(file: str) -> dict:
     try: 
         if not file.endswith(".toml"):
@@ -12,12 +12,16 @@ def get_config(file: str) -> dict:
         with open(file, "rb") as f:
             return tomllib.load(f)
     except FileNotFoundError:
+        logger.error(f"Functions/config.py/get_config: FileNotFoundError: {e}")
         return {"msg": "File not found!", "success": False}
     except PermissionError:
+        logger.error(f"Functions/config.py/get_config: PermissionError: {e}")
         return {"msg": f"Permissions denied, check file permissions.", "success": False}
     except TypeError as e:
+        logger.error(f"Functions/config.py/get_config: TypeError: {e}")
         return {"msg": str(e), "success": False} 
     except Exception:
+        logger.error(f"Functions/config.py/get_config: Exception: {e}")
         return {"msg": f"General Exception: {traceback.format_exc()}", "success": False}
 
 def set_config(file: str, section: str, name: str, value):
@@ -32,12 +36,17 @@ def set_config(file: str, section: str, name: str, value):
         
         with open("config.toml", "wb") as f:
             tomli_w.dump(current_config, f)
-        return {"msg": f"Successfully applied new config value for entry '{name}' in section '{section}' in '{file}'", "success": True}
-    except FileNotFoundError:
+        logger.info(f"Functions/config.py/set_config: Successfully applied new config value for entry '{name}' in section '{section}' in '{file}' with '{value}'")
+        return {"msg": f"Functions/config.py: Successfully applied new config value for entry '{name}' in section '{section}' in '{file}' with '{value}'", "success": True}
+    except FileNotFoundError as e:
+        logger.error(f"Functions/config.py/set_config: FileNotFoundError: {e}")
         return {"msg": "File not found!", "success": False}
     except KeyError as e:
+        logger.error(f"Functions/config.py/set_config: KeyError: {e} ")
         return {"msg": f"Section '{e}' not found!", "success": False}
-    except PermissionError:
+    except PermissionError as e:
+        logger.error(f"Functions/config.py/set_config: PermissionError: {e}")
         return {"msg": f"Permissions denied, check file permissions.", "success": False}
-    except Exception:
+    except Exception as e:
+        logger.error(f"Functions/config.py/set_config: Exception: {e}  ")
         return {"msg": f"Exception: {traceback.format_exc()}", "success": False}
